@@ -454,7 +454,8 @@ i've
 j
 just
 k
-keep	keeps
+keep
+keeps
 kept
 kg
 km
