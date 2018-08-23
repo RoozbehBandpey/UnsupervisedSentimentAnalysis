@@ -141,7 +141,6 @@ class Corpus():
 #
         return (reviews, gold_standard, tagged_reviews, tagged_reviews_removed, tagged_reviews_removed_words)
 
-
     def neighbour_tokens(self):
         pickle_positive_lexicon = open("Output_Files\\positive_lexicon.pickle", "rb")
         positive_words = pickle.load(pickle_positive_lexicon)
