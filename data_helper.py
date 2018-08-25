@@ -21,7 +21,8 @@ class DataHelper():
 		self.output_dir = "Output_Files"
 	
 	
-	def load_stopwords(self, file_name):
+	def load_stopwords(self):
+		file_name = "English_Stopwords.txt"
 		project_root = os.getcwd()
 		out_path = join(project_root, self.output_dir, "stopwords.pickle")
 		if exists(out_path):
