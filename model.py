@@ -19,15 +19,15 @@ class Model:
 
     def count_based_prediction(self):
 
-        pickle_positive_lexicon = open("Output_Files\\positive_lexicon.pickle", "rb")
+        pickle_positive_lexicon = open("dumps\\positive_lexicon.pickle", "rb")
         positive_words = pickle.load(pickle_positive_lexicon)
         pickle_positive_lexicon.close()
 
-        pickle_negative_lexicon = open("Output_Files\\negative_lexicon.pickle", "rb")
+        pickle_negative_lexicon = open("dumps\\negative_lexicon.pickle", "rb")
         negative_words = pickle.load(pickle_negative_lexicon)
         pickle_negative_lexicon.close()
 
-        pickle_reviews = open("Output_Files\\reviews.pickle", "rb")
+        pickle_reviews = open("dumps\\reviews.pickle", "rb")
         reviews = pickle.load(pickle_reviews)
         pickle_reviews.close()
 
@@ -59,15 +59,15 @@ class Model:
 
     def count_based_prediction_conjunction(self):
 
-        pickle_positive_lexicon = open("Output_Files\\positive_lexicon.pickle", "rb")
+        pickle_positive_lexicon = open("dumps\\positive_lexicon.pickle", "rb")
         positive_words = pickle.load(pickle_positive_lexicon)
         pickle_positive_lexicon.close()
 
-        pickle_negative_lexicon = open("Output_Files\\negative_lexicon.pickle", "rb")
+        pickle_negative_lexicon = open("dumps\\negative_lexicon.pickle", "rb")
         negative_words = pickle.load(pickle_negative_lexicon)
         pickle_negative_lexicon.close()
 
-        pickle_reviews = open("Output_Files\\reviews.pickle", "rb")
+        pickle_reviews = open("dumps\\reviews.pickle", "rb")
         reviews = pickle.load(pickle_reviews)
         pickle_reviews.close()
 
@@ -112,15 +112,15 @@ class Model:
 
     def count_based_prediction_conjunction_pmi(self):
 
-        pickle_positive_lexicon = open("Output_Files\\positive_lexicon.pickle", "rb")
+        pickle_positive_lexicon = open("dumps\\positive_lexicon.pickle", "rb")
         positive_words = pickle.load(pickle_positive_lexicon)
         pickle_positive_lexicon.close()
 
-        pickle_negative_lexicon = open("Output_Files\\negative_lexicon.pickle", "rb")
+        pickle_negative_lexicon = open("dumps\\negative_lexicon.pickle", "rb")
         negative_words = pickle.load(pickle_negative_lexicon)
         pickle_negative_lexicon.close()
 
-        pickle_reviews = open("Output_Files\\reviews.pickle", "rb")
+        pickle_reviews = open("dumps\\reviews.pickle", "rb")
         reviews = pickle.load(pickle_reviews)
         pickle_reviews.close()
 
@@ -130,7 +130,7 @@ class Model:
         diff_pol = c2.different_polarity()
 
         # m = Model()
-        pmi = open("Output_Files\\PMI_data_structure.pickle", "rb")
+        pmi = open("dumps\\PMI_data_structure.pickle", "rb")
         PMI_data_structure = pickle.load(pmi)
         pmi.close()
 
@@ -172,7 +172,7 @@ class Model:
         return predict
 
     def pointwise_mutual_information(self, token):
-        pmi = open("Output_Files\\PMI_data_structure.pickle", "rb")
+        pmi = open("dumps\\PMI_data_structure.pickle", "rb")
         PMI_data_structure = pickle.load(pmi)
         pmi.close()
 

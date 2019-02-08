@@ -28,7 +28,7 @@ class Corpus():
         return tokens
 
     def stopwords_data_structure(self):
-        stopwords_file = open("Input_Files\\English_Stopwords.txt", "r")
+        stopwords_file = open("input\\stopwords_en.txt", "r")
         c = Corpus()
         stopwords = stopwords_file.readlines()
         print(len(set(stopwords)))
@@ -55,11 +55,11 @@ class Corpus():
         #return positive_words, negative_words
 
     def lexicon_data_structure(self):
-        Pwords = Corpus("Input_Files\\opinion-lexicon-English\\positive-words.txt")
+        Pwords = Corpus("input\\opinion-lexicon-English\\positive-words.txt")
         Pwords.__del__()
         positive_words = Pwords.omit_header()
 
-        Nwords = Corpus("Input_Files\\opinion-lexicon-English\\negative-words.txt")
+        Nwords = Corpus("input\\opinion-lexicon-English\\negative-words.txt")
         Nwords.__del__()
         negative_words = Nwords.omit_header()
 
@@ -74,25 +74,25 @@ class Corpus():
         reviews = {}
         tagged_reviews = {}
 
-        for file in glob.glob("Input_Files\\review_polarity\\neg\\*.txt"):
-            new_neg_file = file.replace("Input_Files\\review_polarity\\neg\\", "")
+        for file in glob.glob("input\\review_polarity\\neg\\*.txt"):
+            new_neg_file = file.replace("input\\review_polarity\\neg\\", "")
             neg_rev_file_name_list.append(new_neg_file)
             gold_standard.__setitem__(new_neg_file, -1)
 
-        for file in glob.glob("Input_Files\\review_polarity\\pos\\*.txt"):
-            new_pos_file = file.replace("Input_Files\\review_polarity\\pos\\", "")
+        for file in glob.glob("input\\review_polarity\\pos\\*.txt"):
+            new_pos_file = file.replace("input\\review_polarity\\pos\\", "")
             pos_rev_file_name_list.append(new_pos_file)
             gold_standard.__setitem__(new_pos_file, 1)
 
         for file_name in neg_rev_file_name_list:
-            negative_review = open("Input_Files\\review_polarity\\neg\\"+file_name, 'r')
+            negative_review = open("input\\review_polarity\\neg\\"+file_name, 'r')
             negative_sentence = negative_review.read()
             negative_review.close()
             reviews.__setitem__(file_name,word_tokenize(negative_sentence))
             tagged_reviews.__setitem__(file_name, nltk.pos_tag(word_tokenize(negative_sentence)))
 
         for file_name in pos_rev_file_name_list:
-            positive_review = open("Input_Files\\review_polarity\\pos\\" + file_name, 'r')
+            positive_review = open("input\\review_polarity\\pos\\" + file_name, 'r')
             positive_sentence = positive_review.read()
             positive_review.close()
             reviews.__setitem__(file_name, word_tokenize(positive_sentence))
@@ -123,34 +123,34 @@ class Corpus():
         #    #print(zip(reviews[item][1:], reviews[item]))
         #    #print(reviews[item])
 
-        pickle_out_1 = open("Output_Files\\reviews.pickle", "wb")
+        pickle_out_1 = open("dumps\\reviews.pickle", "wb")
         pickle.dump(reviews, pickle_out_1)
         pickle_out_1.close()
 
-        pickle_out_2 = open("Output_Files\\tagged_reviews.pickle", "wb")
+        pickle_out_2 = open("dumps\\tagged_reviews.pickle", "wb")
         pickle.dump(tagged_reviews, pickle_out_2)
         pickle_out_2.close()
 
-        pickle_out_3 = open("Output_Files\\tagged_reviews_removed.pickle", "wb")
+        pickle_out_3 = open("dumps\\tagged_reviews_removed.pickle", "wb")
         pickle.dump(tagged_reviews_removed, pickle_out_3)
         pickle_out_3.close()
 
-        pickle_out_4 = open("Output_Files\\tagged_reviews_removed_words.pickle", "wb")
+        pickle_out_4 = open("dumps\\tagged_reviews_removed_words.pickle", "wb")
         pickle.dump(tagged_reviews_removed_words, pickle_out_4)
         pickle_out_4.close()
 #
         return (reviews, gold_standard, tagged_reviews, tagged_reviews_removed, tagged_reviews_removed_words)
 
     def neighbour_tokens(self):
-        pickle_positive_lexicon = open("Output_Files\\positive_lexicon.pickle", "rb")
+        pickle_positive_lexicon = open("dumps\\positive_lexicon.pickle", "rb")
         positive_words = pickle.load(pickle_positive_lexicon)
         pickle_positive_lexicon.close()
 
-        pickle_negative_lexicon = open("Output_Files\\negative_lexicon.pickle", "rb")
+        pickle_negative_lexicon = open("dumps\\negative_lexicon.pickle", "rb")
         negative_words = pickle.load(pickle_negative_lexicon)
         pickle_negative_lexicon.close()
 
-        pickle_reviews = open("Output_Files\\reviews.pickle", "rb")
+        pickle_reviews = open("dumps\\reviews.pickle", "rb")
         reviews = pickle.load(pickle_reviews)
         pickle_reviews.close()
 
@@ -171,7 +171,7 @@ class Corpus():
         #                neighbours.append(win[1])
         #    positive_with_neighbours.__setitem__(positive, list(set(neighbours)))
 #
-        #pickle_out = open("Output_Files\\positive_with_neighbours.pickle", "wb")
+        #pickle_out = open("dumps\\positive_with_neighbours.pickle", "wb")
         #pickle.dump(positive_with_neighbours,pickle_out)
         #pickle_out.close()
 
@@ -185,12 +185,12 @@ class Corpus():
                         neighbours.append(win[1])
             negative_with_neighbours.__setitem__(negative, list(set(neighbours)))
 
-        pickle_out = open("Output_Files\\negative_with_neighbours.pickle", "wb")
+        pickle_out = open("dumps\\negative_with_neighbours.pickle", "wb")
         pickle.dump(negative_with_neighbours, pickle_out)
         pickle_out.close()
 
     def all_reviews_with_frequency(self):
-        pickle_reviews = open("Output_Files\\reviews.pickle", "rb")
+        pickle_reviews = open("dumps\\reviews.pickle", "rb")
         reviews = pickle.load(pickle_reviews)
         pickle_reviews.close()
         all_tokens = []
@@ -201,7 +201,7 @@ class Corpus():
         return token_frequency
 
     def neighbour_reviews_with_frequency(self):
-        pickle_reviews = open("Output_Files\\reviews.pickle", "rb")
+        pickle_reviews = open("dumps\\reviews.pickle", "rb")
         reviews = pickle.load(pickle_reviews)
         pickle_reviews.close()
         all_tokens = []
@@ -217,7 +217,7 @@ class Corpus():
         return neighbour_reviews
 
     def same_polarity(self):
-        pickle_reviews = open("Output_Files\\tagged_reviews_removed_words.pickle", "rb")
+        pickle_reviews = open("dumps\\tagged_reviews_removed_words.pickle", "rb")
         reviews = pickle.load(pickle_reviews)
         pickle_reviews.close()
         all_tokens = []
@@ -240,7 +240,7 @@ class Corpus():
         return same_polarity
 
     def different_polarity(self):
-        pickle_reviews = open("Output_Files\\tagged_reviews_removed_words.pickle", "rb")
+        pickle_reviews = open("dumps\\tagged_reviews_removed_words.pickle", "rb")
         reviews = pickle.load(pickle_reviews)
         pickle_reviews.close()
 
@@ -260,7 +260,7 @@ class Corpus():
         return different_polarity
 
     def PMI_data_structure(self):
-        pickle_reviews = open("Output_Files\\reviews.pickle", "rb")
+        pickle_reviews = open("dumps\\reviews.pickle", "rb")
         reviews = pickle.load(pickle_reviews)
         pickle_reviews.close()
 
@@ -300,7 +300,7 @@ class Corpus():
         for element in PMI_dictrionary:
             PMI_data_structure.__setitem__(element, math.log2((PMI_dictrionary[element][0]*poor_hit)/(PMI_dictrionary[element][1]*excellent_hit)))
 
-        pickle_out = open("Output_Files\\PMI_data_structure.pickle", "wb")
+        pickle_out = open("dumps\\PMI_data_structure.pickle", "wb")
         pickle.dump(PMI_data_structure, pickle_out)
         pickle_out.close()
 

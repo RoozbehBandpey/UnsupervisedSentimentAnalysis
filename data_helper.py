@@ -17,12 +17,12 @@ class DataHelper():
 	
 	
 	def __init__(self):
-		self.input_dir = "Input_Files"
-		self.output_dir = "Output_Files"
+		self.input_dir = "input"
+		self.output_dir = "dumps"
 	
 	
 	def load_stopwords(self):
-		file_name = "English_Stopwords.txt"
+		file_name = "stopwords_en.txt"
 		project_root = os.getcwd()
 		out_path = join(project_root, self.output_dir, "stopwords.pickle")
 		if exists(out_path):

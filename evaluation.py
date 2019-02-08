@@ -8,7 +8,7 @@ class Evaluation():
         pass
 
     def Evaluate(self, predicted = {}):
-        pickle_gold_standard = open("Output_Files\\gold_standard.pickle", "rb")
+        pickle_gold_standard = open("dumps\\gold_standard.pickle", "rb")
         gold_standard = pickle.load(pickle_gold_standard)
         pickle_gold_standard.close()
 
