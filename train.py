@@ -26,5 +26,6 @@ from data_helper import DataHelper
 # print("F-measure micro: "+result[1]+"   F-measure macro: "+result[2])
 ##################################################################################################
 d = DataHelper()
-x=d.load_stopwords()
-print(len(x))
+# x=d.load_stopwords()
+d.load_lexicon()
+# print(len(x))

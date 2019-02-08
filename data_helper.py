@@ -52,35 +52,43 @@ class DataHelper():
 				return False
 			
 	def load_lexicon(self):
-		pWords_file_name = "opinion-lexicon-English/positive-words.txt"
-		nWords_file_name = "opinion-lexicon-English/negative-words.txt"
-		out_path = join(self.project_root, self.output_dir, "lex_pol.pickle")
-		if exists(out_path):
-			print("Loading existing prepared file {0}".format(split(out_path)[-1]))
+		p_words_file_name = "opinion-lexicon-English/positive-words.txt"
+		n_words_file_name = "opinion-lexicon-English/negative-words.txt"
+		out_path_lst = join(self.project_root, self.output_dir, "lex_pol_list.pickle")
+		out_path_dic = join(self.project_root, self.output_dir, "lex_pol_dict.pickle")
+		if exists(out_path_lst):
+			print("Loading existing prepared file {0}".format(split(out_path_lst)[-1]))
 			try:
-				with open(out_path, 'rb') as f_load:
-					lexicon_polarity = pickle.load(f_load)
-				return lexicon_polarity
+				with open(out_path_lst, 'rb') as f_load:
+					lexicon_polarity_list = pickle.load(f_load)
+				return lexicon_polarity_list
 			except IOError as e:
 				print(e)
 				return False
 		else:
-			pWords_file_path = join(self.project_root, self.input_dir, pWords_file_name)
-			nWords_file_path = join(self.project_root, self.input_dir, nWords_file_name)
-			lexicon_polarity = {}
+			p_words_file_path = join(self.project_root, self.input_dir, p_words_file_name)
+			n_words_file_path = join(self.project_root, self.input_dir, n_words_file_name)
+			lexicon_polarity_list = []
+			lexicon_polarity_dict = {}
 			try:
-				with open(pWords_file_path, "r", encoding='utf-8') as fin:
-					row = fin.readline()
-					while row:
-						lexicon_polarity.append(self.__clean_data(row, removePunc=False))
-						row = fin.readline()
+				with open(p_words_file_path, "r", encoding='utf-8') as pfin, open(n_words_file_path, "r", encoding='utf-8') as nfin:
+					p_list = [w+'.1' for w in pfin.read().split("\n") if ';' not in w and w !='']
+					n_list = [w+'.0' for w in nfin.read().split("\n") if ';' not in w and w != '']
+					lexicon_polarity_list = p_list + n_list
+					
+					lexicon_polarity_dict = {item.split('.')[0]:int(item.split('.')[1]) for item in lexicon_polarity_list}
+					# print(lexicon_polarity_dict)
+					
 			except IOError as e:
 				print(e)
 			
 			try:
-				with open(out_path, 'wb') as f_dump:
-					pickle.dump(list(set(lexicon_polarity)), f_dump)
-				return list(set(lexicon_polarity))
+				with open(out_path_lst, 'wb') as f_dump:
+					pickle.dump(lexicon_polarity_list, f_dump)
+				with open(out_path_dic, 'wb') as f_dump:
+					pickle.dump(lexicon_polarity_dict, f_dump)
+					
+				return lexicon_polarity_list
 			except IOError as e:
 				print(e)
 				return False
