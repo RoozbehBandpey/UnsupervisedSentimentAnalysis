@@ -17,7 +17,7 @@ from pprint import pprint
 ################################################################################################
 # m = Model()
 # #pred = m.count_based_prediction()
-# #pred = m.count_based_prediction_conjunction()
+# #pred = m.count_based_prediction_aconjunction()
 # pred = m.count_based_prediction_conjunction_pmi()
 # #
 # Eval = Evaluation()
@@ -28,8 +28,8 @@ from pprint import pprint
 ##################################################################################################
 d = DataHelper()
 # x=d.load_stopwords()
-rev = d.load_reviews()
-# pprint(rev)
+rev = d.polarity_cluster()
+pprint(rev)
 # print(len(rev))
 
 # print(len(x))

@@ -5,7 +5,9 @@ import string
 import re
 import os
 import glob
-
+import nltk
+from nltk.tokenize import word_tokenize
+from pprint import pprint
 
 class DataHelper():
 	"""
@@ -209,3 +211,64 @@ class DataHelper():
 		res = res.replace('Ue', 'Ü')
 		res = res.replace('ss', 'ß')
 		return res
+	
+	
+	def polarity_cluster(self):
+
+		same_out_path = join(self.project_root, self.output_dir, "same_polarity.pickle")
+		diff_out_path = join(self.project_root, self.output_dir, "different_polarity.pickle")
+		
+		if exists(same_out_path) and exit(diff_out_path):
+			print("Loading existing prepared file {0}".format(split(same_out_path)[-1]))
+			print("Loading existing prepared file {0}".format(split(diff_out_path)[-1]))
+			try:
+				with open(same_out_path, 'rb') as s_f_load:
+					same_polarity = pickle.load(s_f_load)
+				with open(diff_out_path, 'rb') as d_f_load:
+					diff_polarity = pickle.load(d_f_load)
+				return {"same_pol": same_polarity, "diff_pol": diff_polarity}
+			except IOError as e:
+				print(e)
+				return False
+		else:
+			reviews = self.load_reviews()
+			same_polarity = []
+			diff_polarity = []
+			for doc_id in reviews:
+				review = reviews[doc_id]
+				review_text = review['text']
+				pos_tagged = nltk.pos_tag(word_tokenize(review_text))
+				for i in range(len(pos_tagged)):
+					if 0 < i < len(pos_tagged) - 1:
+						prev_pos_token = pos_tagged[i - 1]
+						cur_pos_token = pos_tagged[i]
+						next_pos_token = pos_tagged[i + 1]
+						prev_pos = prev_pos_token[1]
+						token = cur_pos_token[0]
+						next_pos = next_pos_token[1]
+						
+						prev_token = prev_pos_token[0]
+						next_token = next_pos_token[0]
+						if token == 'and':
+							if 'JJ' in prev_pos and 'JJ' in next_pos:
+								same_polarity.append(tuple([prev_token, next_token]))
+							if 'RB' in prev_pos and 'RB' in next_pos:
+								same_polarity.append(tuple([prev_token, next_token]))
+						if token == 'but':
+							if 'JJ' in prev_pos and 'JJ' in next_pos:
+								diff_polarity.append(tuple([prev_token, next_token]))
+							if 'RB' in prev_pos and 'RB' in next_pos:
+								diff_polarity.append(tuple([prev_token, next_token]))
+
+					
+			try:
+				with open(same_out_path, 'wb') as s_f_dump:
+					pickle.dump(same_polarity, s_f_dump)
+				with open(diff_out_path, 'wb') as d_f_dump:
+					pickle.dump(diff_polarity, d_f_dump)
+
+				return {"same_pol": same_polarity, "diff_pol": diff_polarity}
+			except IOError as e:
+				print(e)
+				return False
+	
