@@ -4,6 +4,7 @@
 # from model import Model
 # from evaluation import Evaluation
 from data_helper import DataHelper
+from pprint import pprint
 # import nltk
 # import pickle
 
@@ -27,5 +28,8 @@ from data_helper import DataHelper
 ##################################################################################################
 d = DataHelper()
 # x=d.load_stopwords()
-d.load_lexicon()
+rev = d.load_reviews()
+# pprint(rev)
+# print(len(rev))
+
 # print(len(x))

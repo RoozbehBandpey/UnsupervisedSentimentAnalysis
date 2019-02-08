@@ -4,6 +4,7 @@ from unicodedata import normalize
 import string
 import re
 import os
+import glob
 
 
 class DataHelper():
@@ -92,10 +93,54 @@ class DataHelper():
 			except IOError as e:
 				print(e)
 				return False
-			
+	
+	
+	def load_reviews(self):
+		main_dir = "review_polarity"
+		review_path = join(self.project_root, self.input_dir, main_dir, "*", "*")
+		out_path = join(self.project_root, self.output_dir, "reviews.pickle")
+		
+		if exists(out_path):
+			print("Loading existing prepared file {0}".format(split(out_path)[-1]))
+			try:
+				with open(out_path, 'rb') as f_load:
+					reviews = pickle.load(f_load)
+				return reviews
+			except IOError as e:
+				print(e)
+				return False
+		else:
+			all_rev_path = glob.glob(review_path)
+			review_data = {}
+			for path in all_rev_path:
+				try:
+					with open(path, "r", encoding='utf-8') as fin:
+						content = fin.read()
+						if 'neg' in path:
+							pol = 0
+						elif 'pos' in path:
+							pol = 1
+						else:
+							pol = None
+						review_data[split(path)[-1].replace('.txt', '')] = {'text': self.__clean_data(content, remove_punc=True),
+															'polarity': pol}
+	
+				except IOError as e:
+					print(e)
+					return False
+
+			try:
+				with open(out_path, 'wb') as f_dump:
+					pickle.dump(review_data, f_dump)
+
+				return review_data
+			except IOError as e:
+				print(e)
+				return False
 
 
-	def __clean_data(self, text, removePunc=True, toLower=True, removeNonPrintable=True, unicodeNormalize=True):
+
+	def __clean_data(self, text, remove_punc=True, to_lower=True, remove_non_printable=True, unicode_normalize=True):
 		"""
 		char filtering with regex
 		remove punctuation
@@ -111,17 +156,17 @@ class DataHelper():
 		@:return: manipulated text as str
 		"""
 		
-		if unicodeNormalize:
+		if unicode_normalize:
 			text = normalize('NFD', text).encode('ascii', 'ignore')
 			text = text.decode('UTF-8')
-		if toLower:
+		if to_lower:
 			text = text.lower()
-		if removePunc:
+		if remove_punc:
 			text = text.split()
 			table = str.maketrans('', '', string.punctuation)
 			text = [word.translate(table) for word in text]
 			text = ' '.join(text)
-		if removeNonPrintable:
+		if remove_non_printable:
 			re_print = re.compile('[^%s]' % re.escape(string.printable))
 			text = [re_print.sub('', w) for w in text]
 			text = ''.join(text)
@@ -130,7 +175,7 @@ class DataHelper():
 		return text
 	
 	
-	def encodeUmlauts(self, text):
+	def encode_umlauts(self, text):
 		"""
 		Replaces German umlauts and sharp s to its respective digraphs.
 
@@ -148,7 +193,7 @@ class DataHelper():
 		return res
 	
 	
-	def decodeUmlauts(self, text):
+	def decode_umlauts(self, text):
 		"""
 		Replaces German umlauts digraphs to its actual character.
 
