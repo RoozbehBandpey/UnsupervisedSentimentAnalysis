@@ -14,17 +14,17 @@ class DataHelper():
 	"""
 	input_dir = ""
 	output_dir = ""
+	project_root = ""
 	
 	
 	def __init__(self):
 		self.input_dir = "input"
 		self.output_dir = "dumps"
-	
+		self.project_root = os.getcwd()
 	
 	def load_stopwords(self):
 		file_name = "stopwords_en.txt"
-		project_root = os.getcwd()
-		out_path = join(project_root, self.output_dir, "stopwords.pickle")
+		out_path = join(self.project_root, self.output_dir, "stopwords.pickle")
 		if exists(out_path):
 			print("Loading existing prepared file {0}".format(split(out_path)[-1]))
 			try:
@@ -33,26 +33,57 @@ class DataHelper():
 				return stopwords
 			except IOError as e:
 				print(e)
-				return None
+				return False
 		else:
-			file_path = join(project_root, self.input_dir, file_name)
-			stopwords = []
+			file_path = join(self.project_root, self.input_dir, file_name)
 			try:
 				with open(file_path, "r", encoding='utf-8') as fin:
-					row = fin.readline()
-					while row:
-						stopwords.append(self.__clean_data(row,removePunc=False))
-						row = fin.readline()
+					content = fin.read()
+					stopwords = content.split("\n")
 			except IOError as e:
 				print(e)
-			
+				return False
 			try:
 				with open(out_path, 'wb') as f_dump:
 					pickle.dump(list(set(stopwords)), f_dump)
 				return list(set(stopwords))
 			except IOError as e:
 				print(e)
-				return None
+				return False
+			
+	def load_lexicon(self):
+		pWords_file_name = "opinion-lexicon-English/positive-words.txt"
+		nWords_file_name = "opinion-lexicon-English/negative-words.txt"
+		out_path = join(self.project_root, self.output_dir, "lex_pol.pickle")
+		if exists(out_path):
+			print("Loading existing prepared file {0}".format(split(out_path)[-1]))
+			try:
+				with open(out_path, 'rb') as f_load:
+					lexicon_polarity = pickle.load(f_load)
+				return lexicon_polarity
+			except IOError as e:
+				print(e)
+				return False
+		else:
+			pWords_file_path = join(self.project_root, self.input_dir, pWords_file_name)
+			nWords_file_path = join(self.project_root, self.input_dir, nWords_file_name)
+			lexicon_polarity = {}
+			try:
+				with open(pWords_file_path, "r", encoding='utf-8') as fin:
+					row = fin.readline()
+					while row:
+						lexicon_polarity.append(self.__clean_data(row, removePunc=False))
+						row = fin.readline()
+			except IOError as e:
+				print(e)
+			
+			try:
+				with open(out_path, 'wb') as f_dump:
+					pickle.dump(list(set(lexicon_polarity)), f_dump)
+				return list(set(lexicon_polarity))
+			except IOError as e:
+				print(e)
+				return False
 			
 
 
